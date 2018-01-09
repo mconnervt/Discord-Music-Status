@@ -9,7 +9,7 @@ import discord
 from discord.ext import commands
 from logbook import Logger, StreamHandler, FileHandler
 
-logger = Logger("Discord Music") #TODO update name
+logger = Logger("Discord Xbox")
 logger.handlers.append(StreamHandler(sys.stdout, bubble=True))
 logger.handlers.append(FileHandler("last-run.log", bubble=True, mode="w"))
 
@@ -90,35 +90,36 @@ async def _quit():
     await bot.logout()
 
 
-async def music_loop():
+async def xbox_loop():
     await bot.wait_until_ready()
     await asyncio.sleep(1)
-    last_song = ""
+    last_game = ""
     while not bot.is_closed:
-        song = pull_song()
-        if song != last_song:
-            last_song = song
-            if song == "":
+        xboxGame = pull_game()
+        if xboxGame != last_game:
+            last_game = xboxGame
+            if xboxGame == "":
                 await bot.change_presence(afk=True, status=discord.Status.invisible, game=None)
-                logger.info("Cleared Discord Status because no song is playing")
+                logger.info("Cleared Discord Status because no game is active") #TODO how does API handle offline?
             else:
                 await bot.change_presence(
                     afk=True,
                     status=discord.Status.invisible,
-                    game=discord.Game(name=song, type=2)
+                    game=discord.Game(name=xboxGame, type=2) #TODO figure out what type means
                     )
-                logger.info(f"Set Discord status to {song.encode('ascii', 'ignore').decode()}")
+                #logger.info(f"Set Discord status to {xboxGame.encode('ascii', 'ignore').decode()}") #TODO is the encode/decode needed?
+                logger.info(f"Set Discord status to {xboxGame}") #TODO is the encode/decode needed?
         await asyncio.sleep(8)
 
 
-def pull_song():
-    with open(snip, encoding="utf-8") as f:
-        return f.read()
+def pull_game():
+    print("Inside pull game")
+
 
 
 try:
     logger.info("Logging in")
-    bot.loop.create_task(music_loop())
+    bot.loop.create_task(xbox_loop())
     bot.run(token, bot=False)
 except discord.errors.LoginFailure:
     logger.critical("Log in failed, check token!")
