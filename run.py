@@ -15,7 +15,7 @@ logger.handlers.append(FileHandler("last-run.log", bubble=True, mode="w"))
 
 logger.debug("Loading config files")
 
-default_config = "[Config]\ntoken = \nsnip = "
+default_config = "[Config]\ntoken = \napiKey = \nxboxID = "
 
 config = configparser.ConfigParser()
 
