@@ -9,7 +9,7 @@ import discord
 from discord.ext import commands
 from logbook import Logger, StreamHandler, FileHandler
 
-logger = Logger("Discord Music")
+logger = Logger("Discord Music") #TODO update name
 logger.handlers.append(StreamHandler(sys.stdout, bubble=True))
 logger.handlers.append(FileHandler("last-run.log", bubble=True, mode="w"))
 
@@ -20,7 +20,8 @@ default_config = "[Config]\ntoken = \napiKey = \nxboxID = "
 config = configparser.ConfigParser()
 
 token = ""
-snip = ""
+apiKey = ""
+xboxID = ""
 
 if os.path.exists("config.ini"):
     config.read("config.ini")
@@ -38,14 +39,26 @@ if os.path.exists("config.ini"):
         exit(1)
 
     try:
-        snip = config['Config']['snip']
+        apiKey = config['Config']['apiKey']
     except KeyError:
-        logger.critical("No path to snip found in config, please ensure that the config formatting is correct")
+        logger.critical("No Xbox API key found in config, please ensure that the config formatting is correct")
         time.sleep(5)
         exit(1)
 
-    if snip == "":
-        logger.critical("No path to snip set! Exiting")
+    if apiKey == "":
+        logger.critical("No Xbox API key set! Exiting")
+        time.sleep(5)
+        exit(1)
+
+    try:
+        xboxID = config['Config']['xboxID']
+    except KeyError:
+        logger.critical("No Xbox ID found in config, please ensure that the config formatting is correct")
+        time.sleep(5)
+        exit(1)
+
+    if xboxID == "":
+        logger.critical("No Xbox API key set! Exiting")
         time.sleep(5)
         exit(1)
 
